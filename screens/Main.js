@@ -78,7 +78,7 @@ export default class Main extends React.Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-        backgroundColor:'orange'
+        backgroundColor:'black'
 
 	},
 	droidSafeArea: {
@@ -88,10 +88,15 @@ const styles = StyleSheet.create({
 		flex: 0.1,
 		alignItems: 'center',
 		justifyContent: 'center',
-        backgroundColor:'cyan'
+        backgroundColor:'black',
 	},
 	titleText: {
 		fontSize: 30,
+        color: 'white',
+        fontFamily:'Roboto',
+        textShadowColor: 'white',
+        textShadowOffset: {width:2, height: 1},
+        textShadowRadius: 100,
 	},
 	cameraStyle: {
 		flex: 0.65,
