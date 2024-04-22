@@ -24,48 +24,61 @@ import Filter8 from "../components/filter8";
 import Filter9 from "../components/filter9";
 import Filter10 from "../components/filter10";
 
-let data = [
-  {
-    id: '1',
-    image: require('../assets/crown.png'),
-  },
-  {
-    id: '2',
-    image: require('../assets/halo.png'),
-  },
-  {
-    id: '3',
-    image: require('../assets/crown2.png'),
-  },
-  {
-    id: '4',
-    image: require('../assets/dog.png'),
-  },
-  {
-    id: '5',
-    image: require('../assets/crownf.png'),
-  },
-  {
-    id: '6',
-    image: require('../assets/unicorn.png'),
-  },
-  {
-    id: '7',
-    image: require('../assets/pirate.png'),
-  },
-  {
-    id: '8',
-    image: require('../assets/horn.png'),
-  },
-  {
-    id: '9',
-    image: require('../assets/ear.png'),
-  },
-  {
-    id: '10',
-    image: require('../assets/hair.png'),
-  },
-];
+let data = {
+  Crown: [
+    {
+      id: '1',
+      image: require('../assets/crown.png'),
+    },
+
+    {
+      id: '3',
+      image: require('../assets/crown2.png'),
+    },
+
+    {
+      id: '5',
+      image: require('../assets/crownf.png'),
+    },
+  ],
+
+  Fancy: [
+    {
+      id: '2',
+      image: require('../assets/halo.png'),
+    },
+
+    {
+      id: '4',
+      image: require('../assets/dog.png'),
+    },
+
+    {
+      id: '6',
+      image: require('../assets/unicorn.png'),
+    },
+
+    {
+      id: '7',
+      image: require('../assets/pirate.png'),
+    },
+
+    {
+      id: '8',
+      image: require('../assets/horn.png'),
+    },
+
+    {
+      id: '9',
+      image: require('../assets/ear.png'),
+    },
+
+    {
+      id: '10',
+      image: require('../assets/hair.png'),
+    },
+  ],
+}
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -74,6 +87,8 @@ export default class Main extends React.Component {
       hasCameraPermission: null,
       faces: [],
       current_filter: 'filter_1',
+      selected: "Crown"
+
     };
     this.onCameraPermission = this.onCameraPermission.bind(this);
     this.onFacesDetected = this.onFacesDetected.bind(this);
@@ -111,79 +126,101 @@ export default class Main extends React.Component {
     return (
       <View style={styles.container}>
         <SafeAreaView style={styles.droidSafeArea} />
-        <View style={styles.headingContainer}>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            <Text style={styles.titleText1}>FR</Text>
-            <Text style={styles.titleText2}>APP</Text>
-          </View>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            <Text style={styles.subheading1}>Try Our</Text>
-            <Text style={styles.subheading2}>Cool Frames</Text>
-          </View>
+        <View style={styles.upperContainer}>
+          <Image
+            source={require("../assets/appIcon.png")}
+            style={styles.appIcon}
+          />
+          <Text style={styles.appName}>Look Me....</Text>
         </View>
-        <View style={styles.cameraStyle}>
+        <View style={styles.middleContainer}>
           <Camera
             style={{ flex: 1 }}
             type={Camera.Constants.Type.front}
             faceDetectorSettings={{
-              mode: FaceDetector.FaceDetectorMode.fast,
-              detectLandmarks: FaceDetector.FaceDetectorLandmarks.none,
-              runClassifications: FaceDetector.FaceDetectorClassifications.none,
-              minDetectionInterval: 100,
-              tracking: true,
+              mode: FaceDetector.Constants.Mode.fast,
+              detectLandmarks: FaceDetector.Constants.Landmarks.all,
+              runClassifications: FaceDetector.Constants.Classifications.all
             }}
             onFacesDetected={this.onFacesDetected}
             onFacesDetectionError={this.onFacesDetectionError}
           />
-          {this.state.faces.map((face) => {
-            if (this.state.current_filter === 'filter_1') {
-              return <Filter1 key={face.faceID} face={face} />;
-            } else if (this.state.current_filter === 'filter_2') {
-              return <Filter2 key={face.faceID} face={face} />;
-            } else if(this.state.current_filter === 'filter_3'){
-              return <Filter3 key={face.faceID} face={face}/>
-            }else if(this.state.current_filter === 'filter_4'){
-              return <Filter4 key={face.faceID} face={face}/>
-            }else if(this.state.current_filter === 'filter_5'){
-              return <Filter5 key={face.faceID} face={face}/>
-            }else if(this.state.current_filter === 'filter_6'){
-              return <Filter6 key={face.faceID} face={face}/>
-            }else if(this.state.current_filter === 'filter_7'){
-              return <Filter7 key={face.faceID} face={face}/>
-            }else if(this.state.current_filter === 'filter_8'){
-              return <Filter8 key={face.faceID} face={face}/>
-            }else if(this.state.current_filter === 'filter_9'){
-              return <Filter9 key={face.faceID} face={face}/>
-            }else if(this.state.current_filter === 'filter_10'){
-              return <Filter10 key={face.faceID} face={face}/>
-            }
-            
-
-
-          })}
+          {this.state.faces.map(face => (
+            <Filter
+              key={`face-id-${face.faceID}`}
+              face={face}
+              source={filters[this.state.current_filter].src}
+              width={filters[this.state.current_filter].width}
+              height={filters[this.state.current_filter].height}
+              left={filters[this.state.current_filter].left}
+              right={filters[this.state.current_filter].right}
+              top={filters[this.state.current_filter].top}
+            />
+          ))}
         </View>
-        <View style={styles.framesContainer}>
-          <ScrollView
-            style={{ flexDirection: 'row' }}
-            horizontal
-            showsHorizontalScrollIndicator={false}         
+        <View style={styles.lowerContainer}>
+          <View style={styles.lowerTopContainer}>
+            <ScrollView
+              contentContainerStyle={styles.categories}
+              horizontal
+              showsHorizontalScrollIndicator={false}
             >
-            {data.map((filter_data)=>{
-              return (
-                <TouchableOpacity style={styles.filterImageContainer}
-                onPress={()=>{
-                  this.setState({
-                    current_filter:`filter_${filter_data.id}`
-                  })
-                }}
+              {Object.keys(data).map(category => (
+                <TouchableOpacity
+                  key={`category-button-${category}`}
+                  style={[
+                    styles.category,
+                    {
+                      backgroundColor:
+                        this.state.selected === category ? "#FFA384" : "#E7F2F8"
+                    }
+                  ]}
+                  onPress={() =>
+                    this.setState({
+                      selected: category,
+                      current_filter: data[category][0].id
+                    })
+                  }
                 >
-                <Image 
-                source={filter_data.image}
-                style={{width:80, height:30}}></Image>
+                  <Text>{category}</Text>
                 </TouchableOpacity>
-              )
-            })}
+              ))}
             </ScrollView>
+          </View>
+          <View style={styles.lowerBottomContainer}>
+            <ScrollView
+              contentContainerStyle={styles.filters}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
+              {data[this.state.selected].map(filter_data => {
+                return (
+                  <TouchableOpacity
+                    key={`filter-button-${filter_data.id}`}
+                    style={[
+                      styles.filterButton,
+                      {
+                        borderColor:
+                          this.state.current_filter === filter_data.id
+                            ? "#FFA384"
+                            : "#FFFF"
+                      }
+                    ]}
+                    onPress={() =>
+                      this.setState({
+                        current_filter: `${filter_data.id}`
+                      })
+                    }
+                  >
+                    <Image
+                      source={filter_data.src}
+                      style={styles.filterImage}
+                    />
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
         </View>
       </View>
     );
@@ -216,6 +253,22 @@ const styles = StyleSheet.create({
 	cameraStyle: {
 		flex: 0.65,
 	},
+
+  categories: {
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row"
+  },
+  category: {
+    width: RFValue(80),
+    height: "70%",
+    borderRadius: RFValue(20),
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: RFValue(5),
+    borderWidth: 2
+  },
+  
 	filterContainer: {},
 	actionContainer: {},
 });
